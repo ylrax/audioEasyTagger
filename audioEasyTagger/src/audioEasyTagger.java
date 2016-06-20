@@ -282,26 +282,8 @@ public class audioEasyTagger extends JFrame {
 					@SuppressWarnings("unused")
 					ListenerChangeLabelsButton listener = new ListenerChangeLabelsButton(btnChangeLabels, chckbxChangeAlbum,txtNewAlbum, analyser.getListOfFiles(), chckbxChangeArtist, txtNewArtist);
 					
-					try {
-						AudioFile file = AudioFileIO.read(new File("/home/hugo/Documents/work_unified_documents/programming/test.flac"));
-						Tag tag = file.getTag();
-						System.out.println(tag.getFirst(FieldKey.ARTIST));
-
-					} catch (CannotReadException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (TagException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (ReadOnlyFileException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (InvalidAudioFrameException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
 					
-					System.out.println("aaaaaa");
+					
 				} catch (IOException | CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
