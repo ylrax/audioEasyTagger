@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -36,6 +37,9 @@ import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
+import javax.swing.ScrollPaneConstants;
+import java.awt.Font;
+import javax.swing.UIManager;
 
 
 
@@ -45,9 +49,9 @@ public class audioEasyTagger extends JFrame {
 	private JPanel contentPane;
 	private final JTextField txtNewArtist;
 	private JTextField txtNewAlbum;
-	private JList jlistListOfFilesToTag = new JList<File>();
 	private JList listArtists = new JList<Object>();
 	private JList listAlbums = new JList<Object>();
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -201,11 +205,12 @@ public class audioEasyTagger extends JFrame {
 
 		final JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, BorderLayout.CENTER);
-
-		JLabel lblFolder = new JLabel("Files:");
-		scrollPane.setColumnHeaderView(lblFolder);
-		jlistListOfFilesToTag.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		scrollPane.setViewportView(jlistListOfFilesToTag);
+		
+		table = new JTable();
+		table.setFont(UIManager.getFont("Spinner.font"));
+		table.setFillsViewportHeight(true);
+		table.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		scrollPane.setViewportView(table);
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		// here we track the activity.
@@ -215,6 +220,11 @@ public class audioEasyTagger extends JFrame {
 		// this object will contain the list of files that we want to change.
 
 		// Here we configure the button that selects the folder that we want to tag.		
+		
+		
+		
+		
+		
 		btnNewButton.addActionListener(new ActionListener() {
 			public  void actionPerformed(ActionEvent e) {
 
@@ -222,20 +232,38 @@ public class audioEasyTagger extends JFrame {
 				JFileChooser f = new JFileChooser();
 				f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
 				f.showSaveDialog(null);
-				jlistListOfFilesToTag.removeAll();
+				table.removeAll();
 
 				// we display the chosen folder in the panel
+				  File selectedFile = f.getSelectedFile();
 
 				try {
-
-					final TagAnalyser analyser = new TagAnalyser(f.getSelectedFile());
+ 					final TagAnalyser analyser = new TagAnalyser(selectedFile);
 					final int numberOfFilesToTag = analyser.getListOfFilesString().size();
-					  ArrayList<File> totalListOfFiles = new ArrayList<File>();
+					  
+					ArrayList<File> totalListOfFiles = new ArrayList<File>();
 					totalListOfFiles = analyser.getListOfFiles();
-					jlistListOfFilesToTag= new JList(analyser.getListOfFilesString().toArray());
-					int[] selectedIx = jlistListOfFilesToTag.getSelectedIndices();
+					String[] columnNames = {"File"};
+					
+					 
+					
+					String[][] dataInJTable = new String[numberOfFilesToTag+1][1];
+					System.out.println("1");
+					System.out.println(analyser.getListOfFilesString().size());
+					
+					for (int i =0; i< analyser.getListOfFilesString().toArray().length; i++) {
+						System.out.println("2");
+						System.out.println(analyser.getListOfFilesString().get(i));
+						dataInJTable[i][0] = analyser.getListOfFilesString().get(i);
+						System.out.println(dataInJTable[i][0]);
+					}
+ 
+					table= new JTable(dataInJTable, columnNames);
+					
+					
+					int[] selectedIx = table.getSelectedRows();
 					for (int i :selectedIx){System.out.println(", " + i);}
-					scrollPane.setViewportView(jlistListOfFilesToTag);
+					scrollPane.setViewportView(table);
 					lblNewLabel_1.setText(numberOfFilesToTag + " tags will be changed");
 
 					// here we display the Artists and the Albums in the JList
@@ -289,39 +317,14 @@ public class audioEasyTagger extends JFrame {
 
 
 					listAlbums.addMouseListener(mouseListenerAlbum);
+ 
+					  File selectedFile1 = f.getSelectedFile();
 
-					// here we change the labels using the class TagChanger.
-					// this part is active when the user presses the btnChangeLabels
-					@SuppressWarnings("unused")
-
-					/*final ArrayList<File> totalListOfFilesLocal = totalListOfFiles;
-
-					ListSelectionListener listSelectionListener = new ListSelectionListener() {
-						public void valueChanged(ListSelectionEvent listSelectionEvent) {
-							System.out.print("First index: " + listSelectionEvent.getFirstIndex());
-							System.out.print(", Last index: " + listSelectionEvent.getLastIndex());
-
-							int[] selectedIx = jlistListOfFilesToTag.getSelectedIndices();
-							ArrayList<File> selectedFilesToTag = new ArrayList<File>();
-							if (! jlistListOfFilesToTag.isSelectionEmpty()){
-								for (int i = 0; i < selectedIx.length; i++) {
-									selectedFilesToTag.add(totalListOfFilesLocal.get(selectedIx[i]));	
-								}
-								//jlistListOfFilesToTag.clearSelection(); 
-								//jlistListOfFilesToTag.setSelectedIndex(-1);
-								System.out.println(selectedFilesToTag);
-							}
-							else{ 
-								selectedFilesToTag =  totalListOfFilesLocal;}
-							ListenerChangeLabelsButton listener = new ListenerChangeLabelsButton(btnChangeLabels, chckbxChangeAlbum,txtNewAlbum, selectedFilesToTag,jlistListOfFilesToTag, chckbxChangeArtist, txtNewArtist);
-
-						}
-					};
-					jlistListOfFilesToTag.addListSelectionListener(listSelectionListener);*/
-
-					ListenerChangeLabelsButton listener = new ListenerChangeLabelsButton(btnChangeLabels, chckbxChangeAlbum,txtNewAlbum, totalListOfFiles,jlistListOfFilesToTag, chckbxChangeArtist, txtNewArtist);
-
-
+					ListenerChangeLabelsButton listener = new ListenerChangeLabelsButton(btnChangeLabels, chckbxChangeAlbum,txtNewAlbum, 
+							totalListOfFiles,table,	chckbxChangeArtist, txtNewArtist,
+							   selectedFile1, scrollPane,  scrollPane_Albums,   scrollPane_Artists,  lblNewLabel_1,  listAlbums, listArtists 
+							);
+ 					
 
 
 				} catch (IOException | CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e2) {

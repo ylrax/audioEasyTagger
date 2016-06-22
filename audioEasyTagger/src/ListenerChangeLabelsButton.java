@@ -6,7 +6,10 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -21,27 +24,26 @@ import org.jaudiotagger.tag.TagException;
 
 public class ListenerChangeLabelsButton {
 
+	//this class controls the button btnChangeLabels. It checks the selected files and changes the tags every time the user presses the button.
 
-	public ListenerChangeLabelsButton(JButton btnChangeLabels, final JCheckBox chckbxChangeAlbum, final JTextField txtNewAlbum, final ArrayList<File> totalListOfFiles, final JList<File> listOfFilesToTag, final JCheckBox chckbxChangeArtist,final JTextField txtNewArtist){
-			
+	public ListenerChangeLabelsButton(JButton btnChangeLabels, final JCheckBox chckbxChangeAlbum, final JTextField txtNewAlbum, 
+			final ArrayList<File> totalListOfFiles, final JTable table, final JCheckBox chckbxChangeArtist,final JTextField txtNewArtist,
+			final File selectedFile, final JScrollPane scrollPane, final JScrollPane scrollPane_Albums, final JScrollPane scrollPane_Artists, 
+			final JLabel lblNewLabel_1, final JList listAlbums,final  JList listArtists){
+
 		btnChangeLabels.addActionListener(new ActionListener() {
+
 			//First we get the selected files whose tags the user wants to change:
 			public void actionPerformed(ActionEvent e) {
-				final ArrayList<File> totalListOfFilesLocal = totalListOfFiles;
-
-				//Here we change the selected files only
-				int[] selectedIx = listOfFilesToTag.getSelectedIndices();
+				int[] selectedIx = table.getSelectedRows();
 				ArrayList<File> selectedFilesToTag = new ArrayList<File>();
-				if (! listOfFilesToTag.isSelectionEmpty()){
-					for (int i = 0; i < selectedIx.length; i++) {
-						selectedFilesToTag.add(totalListOfFilesLocal.get(selectedIx[i]));	
-					}
-					//jlistListOfFilesToTag.clearSelection(); 
-					//jlistListOfFilesToTag.setSelectedIndex(-1);
-					System.out.println(selectedFilesToTag);
+				for (int i = 0; i < selectedIx.length; i++) {
+					selectedFilesToTag.add(totalListOfFiles.get(selectedIx[i]));	
 				}
-				else{ 
-					selectedFilesToTag =  totalListOfFilesLocal;}
+				System.out.println(selectedFilesToTag);
+
+				table.clearSelection(); 
+
 				for (final File fileInList : selectedFilesToTag){
 					TagChanger tagger = new TagChanger(fileInList);
 					if (chckbxChangeAlbum.isSelected()){
@@ -66,7 +68,7 @@ public class ListenerChangeLabelsButton {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
- 
+
 					}
 					if (chckbxChangeArtist.isSelected()){
 						try {
@@ -93,15 +95,71 @@ public class ListenerChangeLabelsButton {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
- 
+
 					}
-
-
-
 				}
+				loadFilesInTable(selectedFile, table,   scrollPane,  scrollPane_Albums,   scrollPane_Artists,  lblNewLabel_1,  listAlbums, listArtists );
+
 			}
 
 		});
 
+	}
+
+	public void loadFilesInTable(File selectedFile, JTable table, JScrollPane scrollPane, JScrollPane scrollPane_Albums, JScrollPane scrollPane_Artists, JLabel lblNewLabel_1, JList listAlbums, JList listArtists ){
+		try {
+
+			final TagAnalyser analyser = new TagAnalyser(selectedFile);
+			final int numberOfFilesToTag = analyser.getListOfFilesString().size();
+
+			ArrayList<File> totalListOfFiles = new ArrayList<File>();
+			totalListOfFiles = analyser.getListOfFiles();
+			String[] columnNames = {"File"};
+
+
+
+			String[][] dataInJTable = new String[numberOfFilesToTag+1][1];
+			System.out.println("1");
+			System.out.println(analyser.getListOfFilesString().size());
+
+			for (int i =0; i< analyser.getListOfFilesString().toArray().length; i++) {
+				System.out.println("2");
+				System.out.println(analyser.getListOfFilesString().get(i));
+				dataInJTable[i][0] = analyser.getListOfFilesString().get(i);
+				System.out.println(dataInJTable[i][0]);
+			}
+
+			table= new JTable(dataInJTable, columnNames);
+
+
+			int[] selectedIx = table.getSelectedRows();
+			for (int i :selectedIx){System.out.println(", " + i);}
+			scrollPane.setViewportView(table);
+			lblNewLabel_1.setText(numberOfFilesToTag + " tags will be changed");
+
+			// here we display the Artists and the Albums in the JList
+
+			ArrayList<String> listOfAlbumsWithFrequencies = new ArrayList<String>();
+			int i=0;
+			for (String album: analyser.getListOfAlbumsSortedByFrequency()){
+				listOfAlbumsWithFrequencies.add(album + " (" + analyser.getListOfFrequenciesAlbums().get(i) + ")" );
+				i++;
+			}
+			listAlbums = new JList(listOfAlbumsWithFrequencies.toArray());
+			scrollPane_Albums.setViewportView(listAlbums);
+
+			ArrayList<String> listOfArtistsWithFrequencies = new ArrayList<String>();
+			int j=0;
+			for (String artist: analyser.getListOfArtistsSortedByFrequency()){
+				listOfArtistsWithFrequencies.add(artist + " (" + analyser.getListOfFrequenciesArtists().get(j) + ")" );
+				j++;
+			}
+			listArtists = new JList(listOfArtistsWithFrequencies.toArray());
+			scrollPane_Artists.setViewportView(listArtists);
+
+		} catch (IOException | CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 	}
 }
