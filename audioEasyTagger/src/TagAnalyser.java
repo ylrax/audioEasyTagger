@@ -21,7 +21,8 @@ import org.jaudiotagger.tag.TagException;
 public class TagAnalyser extends filesFromFolder {
 	private  ArrayList<String> listOfArtists = new ArrayList<String>();
 	private  ArrayList<String> listOfAlbums = new ArrayList<String>();
-
+	private ArrayList<String>  listOfGenres = new ArrayList<String>();
+	private ArrayList<String>  listOfTitles = new ArrayList<String>();
 	private  ArrayList<String> listOfArtistsSortedByFrequency = new ArrayList<String>();
 	private  ArrayList<Integer> listOfFrequenciesArtists = new ArrayList<Integer>();
 
@@ -43,14 +44,16 @@ public class TagAnalyser extends filesFromFolder {
 				extension = file.getName().substring(i+1);
 			}
 
-			//we will only be interested in mp3 files, here we add the tags to the corresponding lists:
+			// here we add the tags to the corresponding lists:
 			if (extension.equalsIgnoreCase("mp3") || extension.equalsIgnoreCase("flac")|| extension.equalsIgnoreCase("ogg")){
 				AudioFile mp3file = AudioFileIO.read(file);
 				Tag tag = mp3file.getTag();
 					 
 						this.listOfArtists.add(tag.getFirst(FieldKey.ARTIST));
 						this.listOfAlbums.add(tag.getFirst(FieldKey.ALBUM));
-					 
+						this.listOfGenres.add(tag.getFirst(FieldKey.GENRE));
+						this.listOfTitles.add(tag.getFirst(FieldKey.TITLE));
+						 					 
 				}
 			}
 		
@@ -104,6 +107,38 @@ public class TagAnalyser extends filesFromFolder {
 
 	//getters and setters:
 	
+	public ArrayList<String> getListOfArtists() {
+		return listOfArtists;
+	}
+
+	public void setListOfArtists(ArrayList<String> listOfArtists) {
+		this.listOfArtists = listOfArtists;
+	}
+
+	public ArrayList<String> getListOfAlbums() {
+		return listOfAlbums;
+	}
+
+	public void setListOfAlbums(ArrayList<String> listOfAlbums) {
+		this.listOfAlbums = listOfAlbums;
+	}
+
+	public ArrayList<String> getListOfGenres() {
+		return listOfGenres;
+	}
+
+	public void setListOfGenres(ArrayList<String> listOfGenres) {
+		this.listOfGenres = listOfGenres;
+	}
+
+	public ArrayList<String> getListOfTitles() {
+		return listOfTitles;
+	}
+
+	public void setListOfTitles(ArrayList<String> listOfTitles) {
+		this.listOfTitles = listOfTitles;
+	}
+
 	public ArrayList<String> getListOfArtistsSortedByFrequency() {
 		return listOfArtistsSortedByFrequency;
 	}
