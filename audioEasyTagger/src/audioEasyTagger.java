@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -38,6 +39,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
@@ -107,6 +109,7 @@ public class audioEasyTagger extends JFrame {
 		panel.setLayout(gbl_panel);
 
 		JButton btnNewButton = new JButton("Choose folder");
+		btnNewButton.setIcon(new ImageIcon(audioEasyTagger.class.getResource("/javax/swing/plaf/metal/icons/ocean/directory.gif")));
 		btnNewButton.setVerticalAlignment(SwingConstants.BOTTOM);
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.gridwidth = 2;
@@ -114,15 +117,15 @@ public class audioEasyTagger extends JFrame {
 		gbc_btnNewButton.gridx = 0;
 		gbc_btnNewButton.gridy = 0;
 		panel.add(btnNewButton, gbc_btnNewButton);
-		
+
 		JButton btnRefresh = new JButton();
+		btnRefresh.setIcon(new ImageIcon(audioEasyTagger.class.getResource("/com/sun/javafx/scene/web/skin/Redo_16x16_JFX.png")));
 		GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
 		gbc_btnRefresh.insets = new Insets(0, 0, 5, 0);
 		gbc_btnRefresh.gridx = 2;
-		gbc_btnRefresh.gridy = 0;		 
-		btnRefresh.setIcon(new ImageIcon(new ImageIcon("refresh.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT)));
+		gbc_btnRefresh.gridy = 0;
 		panel.add(btnRefresh, gbc_btnRefresh);
-		
+
 
 		JLabel lblNewLabel = new JLabel("Artists found:");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
@@ -223,7 +226,9 @@ public class audioEasyTagger extends JFrame {
 		final JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 
-		table = new JTable();
+		DefaultTableModel model = new DefaultTableModel();
+
+		table = new JTable(model);
 		table.setFont(UIManager.getFont("Spinner.font"));
 		table.setFillsViewportHeight(true);
 		table.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -234,12 +239,12 @@ public class audioEasyTagger extends JFrame {
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
- 
- 
- 		
- 		 
 
- 		
+
+
+
+
+
 		// Here we configure the button that selects the folder that we want to tag.		
 
 		btnNewButton.addActionListener(new ActionListener() {
@@ -255,46 +260,44 @@ public class audioEasyTagger extends JFrame {
 				File selectedFile = f.getSelectedFile();
 
 				try {
+
+
 					final TagAnalyser analyser = new TagAnalyser(selectedFile);
 					final int numberOfFilesToTag = analyser.getListOfFilesString().size();
 
 					ArrayList<File> totalListOfFiles = new ArrayList<File>();
 					totalListOfFiles = analyser.getListOfFiles();
-					String[] columnNames = {"File","Title","Artist","Album","Genre"};
-					String[][] dataInJTable = new String[numberOfFilesToTag+1][5];
 
-					for (int i =0; i< analyser.getListOfFilesString().toArray().length; i++) {
-						dataInJTable[i][0] = analyser.getListOfFilesString().get(i);
- 						dataInJTable[i][1] = analyser.getListOfTitles().get(i);
- 						dataInJTable[i][2] = analyser.getListOfArtists().get(i);
- 						dataInJTable[i][3] = analyser.getListOfAlbums().get(i);
- 						dataInJTable[i][4] = analyser.getListOfGenres().get(i);
-					}
+					RefreshTable refresh = new RefreshTable(table, scrollPane, selectedFile);
 
-					table= new JTable(dataInJTable, columnNames);
-					scrollPane.setViewportView(table);
+					//					scrollPane.setViewportView(table);
+					//					
 
-
-					
 
 					// here we display the Artists and the Albums in the JList
-
+					DefaultListModel<String> listModelAlbum = new DefaultListModel();
 					ArrayList<String> listOfAlbumsWithFrequencies = new ArrayList<String>();
 					int i=0;
 					for (String album: analyser.getListOfAlbumsSortedByFrequency()){
 						listOfAlbumsWithFrequencies.add(album + " (" + analyser.getListOfFrequenciesAlbums().get(i) + ")" );
+						listModelAlbum.add(i, album + " (" + analyser.getListOfFrequenciesAlbums().get(i) + ")" );
 						i++;
 					}
-					listAlbums = new JList(listOfAlbumsWithFrequencies.toArray());
+			
+					listAlbums.setModel(listModelAlbum);
 					scrollPane_Albums.setViewportView(listAlbums);
+
+					DefaultListModel<String> listModelArtist = new DefaultListModel();
 
 					ArrayList<String> listOfArtistsWithFrequencies = new ArrayList<String>();
 					int j=0;
 					for (String artist: analyser.getListOfArtistsSortedByFrequency()){
 						listOfArtistsWithFrequencies.add(artist + " (" + analyser.getListOfFrequenciesArtists().get(j) + ")" );
+						listModelArtist.add(j, artist + " (" + analyser.getListOfFrequenciesArtists().get(j) + ")" );
 						j++;
+
 					}
-					listArtists = new JList(listOfArtistsWithFrequencies.toArray());
+					listArtists.setModel(listModelArtist);
 					scrollPane_Artists.setViewportView(listArtists);
 
 
@@ -316,7 +319,6 @@ public class audioEasyTagger extends JFrame {
 
 
 					listArtists.addMouseListener(mouseListenerArtists);
-
 					MouseListener mouseListenerAlbum = new MouseAdapter() {
 						public void mouseClicked(MouseEvent e) {
 							if (e.getClickCount() == 2) {
@@ -325,37 +327,32 @@ public class audioEasyTagger extends JFrame {
 							}
 						}
 					};
-
-
 					listAlbums.addMouseListener(mouseListenerAlbum);
 
-					File selectedFile1 = f.getSelectedFile();
 
-					ListenerChangeLabelsButton listener = new ListenerChangeLabelsButton(btnChangeLabels, chckbxChangeAlbum,txtNewAlbum, 
-							totalListOfFiles,table,	chckbxChangeArtist, txtNewArtist,
-							selectedFile1, scrollPane,  scrollPane_Albums,   scrollPane_Artists,  lblNewLabel_1,  listAlbums, listArtists 
-							);
-
-
-
-					
 					// we indicate the number of files that will be changed in the jlabel below the button.
-			 		MouseListener mouseListenerTable = new MouseAdapter() {
+					MouseListener mouseListenerTable = new MouseAdapter() {
 						public void mouseClicked(MouseEvent e) {
 							if (e.getClickCount() == 1) {
-								 int[] selectedIx = table.getSelectedRows();
-									for (int i :selectedIx){System.out.println(", " + i);}
-									scrollPane.setViewportView(table);
-									lblNewLabel_1.setText(selectedIx.length + " tags will be changed");
-									System.out.println("aaaaa");
+								int[] selectedIx = table.getSelectedRows();
+								scrollPane.setViewportView(table);
+								lblNewLabel_1.setText(selectedIx.length + " tags will be changed");
 							}
 						}
 					};
-
-
 					table.addMouseListener(mouseListenerTable);
 
-//					  new loadFilesInTable(selectedFile, table,   scrollPane,  scrollPane_Albums,   scrollPane_Artists,  lblNewLabel_1,  listAlbums, listArtists );
+
+					File selectedFile1 = f.getSelectedFile();
+
+					new ListenerChangeLabelsButton(btnChangeLabels, chckbxChangeAlbum,txtNewAlbum, 
+							totalListOfFiles,table,	chckbxChangeArtist, txtNewArtist,
+							selectedFile1, scrollPane,  scrollPane_Albums,   scrollPane_Artists,  
+							lblNewLabel_1,  listAlbums, listArtists);
+
+
+					new loadFilesInTable(selectedFile, table,   scrollPane,  scrollPane_Albums,   
+							scrollPane_Artists,  lblNewLabel_1,  listAlbums, listArtists);
 
 
 				} catch (IOException | CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e2) {
