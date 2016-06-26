@@ -20,14 +20,7 @@ public class loadFilesInTable {
 	public  loadFilesInTable(File selectedFile, JTable table, JScrollPane scrollPane, JScrollPane scrollPane_Albums, JScrollPane scrollPane_Artists, JLabel lblNewLabel_1, JList listAlbums, JList listArtists ){
 		try {
 
-			final TagAnalyser analyser = new TagAnalyser(selectedFile);
-			final int numberOfFilesToTag = analyser.getListOfFilesString().size();
-
-
-
-
-
-
+			 TagAnalyser analyser = new TagAnalyser(selectedFile);
 
 			// here we display the Artists and the Albums in the JList
 			DefaultListModel<String> listModelAlbum = new DefaultListModel();
@@ -38,7 +31,7 @@ public class loadFilesInTable {
 				listModelAlbum.add(i, album + " (" + analyser.getListOfFrequenciesAlbums().get(i) + ")" );
 				i++;
 			}
-	
+
 			listAlbums.setModel(listModelAlbum);
 			scrollPane_Albums.setViewportView(listAlbums);
 
@@ -59,9 +52,10 @@ public class loadFilesInTable {
 
 			//here we display the table
 			String[] columnNames = {"File","Title","Artist","Album","Genre"};
+			int numberOfFilesToTag = analyser.getListOfFilesString().size();
 			String[][] dataInJTable = new String[numberOfFilesToTag][5];
 
-			for (int i1 =0; i1< analyser.getListOfFilesString().toArray().length; i1++) {
+			for (int i1 =0; i1< numberOfFilesToTag; i1++) {
 				dataInJTable[i1][0] = analyser.getListOfFilesString().get(i1);
 				dataInJTable[i1][1] = analyser.getListOfTitles().get(i1);
 				dataInJTable[i1][2] = analyser.getListOfArtists().get(i1);

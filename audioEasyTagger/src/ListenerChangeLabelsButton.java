@@ -99,7 +99,7 @@ public class ListenerChangeLabelsButton {
 
 					}
 				}
-				 // new loadFilesInTable(selectedFile, table,   scrollPane,  scrollPane_Albums,   scrollPane_Artists,  lblNewLabel_1,  listAlbums, listArtists );
+				  new loadFilesInTable(selectedFile, table,   scrollPane,  scrollPane_Albums,   scrollPane_Artists,  lblNewLabel_1,  listAlbums, listArtists );
 					table.clearSelection(); 
 
 			}
