@@ -54,14 +54,13 @@ public class loadFilesInTable {
 			String[] columnNames = {"File","Title","Artist","Album","Genre"};
 			int numberOfFilesToTag = analyser.getListOfFilesString().size();
 			String[][] dataInJTable = new String[numberOfFilesToTag][5];
-
-			for (int i1 =0; i1< numberOfFilesToTag; i1++) {
+ 			for (int i1 =0; i1< numberOfFilesToTag; i1++) {
 				dataInJTable[i1][0] = analyser.getListOfFilesString().get(i1);
 				dataInJTable[i1][1] = analyser.getListOfTitles().get(i1);
 				dataInJTable[i1][2] = analyser.getListOfArtists().get(i1);
 				dataInJTable[i1][3] = analyser.getListOfAlbums().get(i1);
 				dataInJTable[i1][4] = analyser.getListOfGenres().get(i1);
-			}
+ 			}
 			DefaultTableModel model = new DefaultTableModel(dataInJTable, columnNames);
 			table.setModel(model);
 			scrollPane.setViewportView(table);

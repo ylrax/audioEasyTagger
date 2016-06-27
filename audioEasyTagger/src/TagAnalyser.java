@@ -48,15 +48,23 @@ public class TagAnalyser extends filesFromFolder {
 			if (extension.equalsIgnoreCase("mp3") || extension.equalsIgnoreCase("flac")|| extension.equalsIgnoreCase("ogg")){
 				AudioFile mp3file = AudioFileIO.read(file);
 				Tag tag = mp3file.getTag();
-					 
-						this.listOfArtists.add(tag.getFirst(FieldKey.ARTIST));
-						this.listOfAlbums.add(tag.getFirst(FieldKey.ALBUM));
-						this.listOfGenres.add(tag.getFirst(FieldKey.GENRE));
-						this.listOfTitles.add(tag.getFirst(FieldKey.TITLE));
-						 					 
-				}
+				String artist= "";
+				String album = "";
+				String genre = "";
+				String title = "";
+
+				artist= tag.getFirst(FieldKey.ARTIST);
+				album = tag.getFirst(FieldKey.ALBUM);
+				genre = tag.getFirst(FieldKey.GENRE);
+				title = tag.getFirst(FieldKey.TITLE);
+				this.listOfArtists.add(artist);
+				this.listOfAlbums.add(album);
+				this.listOfGenres.add(genre);
+				this.listOfTitles.add(title);
+
 			}
-		
+		}
+
 
 
 		// here we sort the listOfArtists by frequencies:
@@ -106,7 +114,7 @@ public class TagAnalyser extends filesFromFolder {
 	}
 
 	//getters and setters:
-	
+
 	public ArrayList<String> getListOfArtists() {
 		return listOfArtists;
 	}
