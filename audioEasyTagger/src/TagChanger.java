@@ -41,6 +41,15 @@ public class TagChanger {
 		 
 
 		}
+	
+	public void tagGenre(String genre) throws  IOException,  CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException{
+		AudioFile mp3file = AudioFileIO.read(file);
+		Tag tag = mp3file.getTag();
+		tag.setField(FieldKey.GENRE,genre);
+		mp3file.commit();
+		 
+
+		}
 
 	public File getFile() {
 		return file;

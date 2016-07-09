@@ -29,6 +29,11 @@ public class TagAnalyser extends filesFromFolder {
 	private  ArrayList<String> listOfAlbumsSortedByFrequency = new ArrayList<String>();
 	private  ArrayList<Integer> listOfFrequenciesAlbums = new ArrayList<Integer>();
 
+	private  ArrayList<String> listOfGenresSortedByFrequency = new ArrayList<String>();
+	private  ArrayList<Integer> listOfFrequenciesGenres = new ArrayList<Integer>();
+
+
+
 
 	//this constructor takes the inputFolder and adds all the tags in the folder to the listOfArtists and listOfAlbums. Then it sorts them and stores the frequencies.
 	public  TagAnalyser(File inputFolder) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
@@ -111,6 +116,29 @@ public class TagAnalyser extends filesFromFolder {
 			this.listOfFrequenciesAlbums.add(frequency);
 		}
 
+
+
+		// here we sort the listOfGenres by frequencies:
+
+		final Map<String, Integer> counter3 = new HashMap<String, Integer>();
+		for (String str1 : listOfGenres)
+			counter3.put(str1, 1 + (counter3.containsKey(str1) ? counter3.get(str1) : 0));
+
+		this.listOfGenresSortedByFrequency = new ArrayList<String>(counter3.keySet());
+		this.listOfFrequenciesGenres = new ArrayList<Integer>(listOfGenresSortedByFrequency.size());
+
+		Collections.sort(listOfGenresSortedByFrequency, new Comparator<String>() {
+			@Override
+			public int compare(String x, String y) {
+				return counter3.get(y) - counter3.get(x);
+			}
+		});
+
+		for (String str1 : listOfGenresSortedByFrequency) {
+			int frequency = counter3.get(str1);
+			this.listOfFrequenciesGenres.add(frequency);
+		}
+
 	}
 
 	//getters and setters:
@@ -181,6 +209,25 @@ public class TagAnalyser extends filesFromFolder {
 	public void setListOfAlbumsSortedByFrequency(
 			ArrayList<String> listOfAlbumsSortedByFrequency) {
 		this.listOfAlbumsSortedByFrequency = listOfAlbumsSortedByFrequency;
+	}
+
+
+	public ArrayList<String> getListOfGenresSortedByFrequency() {
+		return listOfGenresSortedByFrequency;
+	}
+
+	public void setListOfGenresSortedByFrequency(
+			ArrayList<String> listOfGenresSortedByFrequency) {
+		this.listOfGenresSortedByFrequency = listOfGenresSortedByFrequency;
+	}
+
+	public ArrayList<Integer> getListOfFrequenciesGenres() {
+		return listOfFrequenciesGenres;
+	}
+
+	public void setListOfFrequenciesGenres(
+			ArrayList<Integer> listOfFrequenciesGenres) {
+		this.listOfFrequenciesGenres = listOfFrequenciesGenres;
 	}
 
 } 

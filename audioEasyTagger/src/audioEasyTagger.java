@@ -1,4 +1,3 @@
-//
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -63,6 +62,7 @@ public class audioEasyTagger extends JFrame {
 	private JList listArtists = new JList<Object>();
 	private JList listAlbums = new JList<Object>();
 	private JTable table;
+	private JTextField txtNewGenre;
 
 	/**
 	 * Launch the application.
@@ -105,10 +105,10 @@ public class audioEasyTagger extends JFrame {
 		final JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.WEST);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{0, 121, 27};
-		gbl_panel.rowHeights = new int[]{38, 0, 108, 0, 109, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panel.columnWeights = new double[]{0.0, 1.0, 0.0};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.columnWidths = new int[]{161, 121, 64};
+		gbl_panel.rowHeights = new int[]{38, 0, 59, 0, 66, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panel.columnWeights = new double[]{1.0, 1.0, 0.0};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 
 		JButton btnNewButton = new JButton("Choose folder");
@@ -116,7 +116,7 @@ public class audioEasyTagger extends JFrame {
 		btnNewButton.setVerticalAlignment(SwingConstants.BOTTOM);
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.gridwidth = 3;
-		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
 		gbc_btnNewButton.gridx = 0;
 		gbc_btnNewButton.gridy = 0;
 		panel.add(btnNewButton, gbc_btnNewButton);
@@ -163,11 +163,32 @@ public class audioEasyTagger extends JFrame {
 		scrollPane_Albums.setViewportView(listAlbums);
 		listAlbums.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 
+		JLabel lblGenresFound = new JLabel("Genres found:");
+		GridBagConstraints gbc_lblGenresFound = new GridBagConstraints();
+		gbc_lblGenresFound.gridwidth = 3;
+		gbc_lblGenresFound.insets = new Insets(0, 0, 5, 0);
+		gbc_lblGenresFound.gridx = 0;
+		gbc_lblGenresFound.gridy = 5;
+		panel.add(lblGenresFound, gbc_lblGenresFound);
+
+		final JScrollPane scrollPane_Genre = new JScrollPane();
+		GridBagConstraints gbc_scrollPane_Genre = new GridBagConstraints();
+		gbc_scrollPane_Genre.gridwidth = 3;
+		gbc_scrollPane_Genre.insets = new Insets(0, 0, 5, 0);
+		gbc_scrollPane_Genre.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane_Genre.gridx = 0;
+		gbc_scrollPane_Genre.gridy = 6;
+		panel.add(scrollPane_Genre, gbc_scrollPane_Genre);
+
+		final JList listGenres = new JList();
+		listGenres.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		scrollPane_Genre.setViewportView(listGenres);
+
 		final JCheckBox chckbxChangeArtist = new JCheckBox("Change artist");
 		GridBagConstraints gbc_chckbxChangeArtist = new GridBagConstraints();
 		gbc_chckbxChangeArtist.insets = new Insets(0, 0, 5, 5);
 		gbc_chckbxChangeArtist.gridx = 0;
-		gbc_chckbxChangeArtist.gridy = 5;
+		gbc_chckbxChangeArtist.gridy = 7;
 		panel.add(chckbxChangeArtist, gbc_chckbxChangeArtist);
 
 		txtNewArtist = new JTextField();
@@ -178,7 +199,7 @@ public class audioEasyTagger extends JFrame {
 		gbc_txtNewArtist.insets = new Insets(0, 0, 5, 0);
 		gbc_txtNewArtist.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtNewArtist.gridx = 1;
-		gbc_txtNewArtist.gridy = 5;
+		gbc_txtNewArtist.gridy = 7;
 		panel.add(txtNewArtist, gbc_txtNewArtist);
 		txtNewArtist.setColumns(10);
 
@@ -186,7 +207,7 @@ public class audioEasyTagger extends JFrame {
 		GridBagConstraints gbc_chckbxChangeAlbum = new GridBagConstraints();
 		gbc_chckbxChangeAlbum.insets = new Insets(0, 0, 5, 5);
 		gbc_chckbxChangeAlbum.gridx = 0;
-		gbc_chckbxChangeAlbum.gridy = 6;
+		gbc_chckbxChangeAlbum.gridy = 8;
 		panel.add(chckbxChangeAlbum, gbc_chckbxChangeAlbum);
 
 		txtNewAlbum = new JTextField();
@@ -197,9 +218,28 @@ public class audioEasyTagger extends JFrame {
 		gbc_txtNewAlbum.insets = new Insets(0, 0, 5, 0);
 		gbc_txtNewAlbum.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtNewAlbum.gridx = 1;
-		gbc_txtNewAlbum.gridy = 6;
+		gbc_txtNewAlbum.gridy = 8;
 		panel.add(txtNewAlbum, gbc_txtNewAlbum);
 		txtNewAlbum.setColumns(10);
+
+		final JCheckBox chckbxChangeGenre = new JCheckBox("Change Genre");
+		GridBagConstraints gbc_chckbxChangeGenre = new GridBagConstraints();
+		gbc_chckbxChangeGenre.insets = new Insets(0, 0, 5, 5);
+		gbc_chckbxChangeGenre.gridx = 0;
+		gbc_chckbxChangeGenre.gridy = 9;
+		panel.add(chckbxChangeGenre, gbc_chckbxChangeGenre);
+
+		txtNewGenre = new JTextField();
+		txtNewGenre.setText("New Genre");
+		txtNewGenre.setColumns(10);
+		txtNewGenre.setBackground(SystemColor.window);
+		GridBagConstraints gbc_txtNewGenre = new GridBagConstraints();
+		gbc_txtNewGenre.gridwidth = 2;
+		gbc_txtNewGenre.insets = new Insets(0, 0, 5, 5);
+		gbc_txtNewGenre.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtNewGenre.gridx = 1;
+		gbc_txtNewGenre.gridy = 9;
+		panel.add(txtNewGenre, gbc_txtNewGenre);
 
 		final JButton btnSelectAll = new JButton();
 		btnSelectAll.setText("Select all");
@@ -207,7 +247,7 @@ public class audioEasyTagger extends JFrame {
 		GridBagConstraints gbc_btnSelectAll = new GridBagConstraints();
 		gbc_btnSelectAll.insets = new Insets(0, 0, 5, 5);
 		gbc_btnSelectAll.gridx = 0;
-		gbc_btnSelectAll.gridy = 8;
+		gbc_btnSelectAll.gridy = 11;
 		panel.add(btnSelectAll, gbc_btnSelectAll);
 
 		final JButton btnChangeLabels = new JButton("Change tags");
@@ -217,22 +257,22 @@ public class audioEasyTagger extends JFrame {
 		gbc_btnChangeLabels.insets = new Insets(0, 0, 5, 0);
 		gbc_btnChangeLabels.gridwidth = 2;
 		gbc_btnChangeLabels.gridx = 1;
-		gbc_btnChangeLabels.gridy = 8;
+		gbc_btnChangeLabels.gridy = 11;
 		panel.add(btnChangeLabels, gbc_btnChangeLabels);
 
-		final JLabel lblTagsSelected = new JLabel("0 files are selected");
+		final JLabel lblTagsSelected = new JLabel("<html><body style='width: 200 px'> 0  files are selected </html>");
 		GridBagConstraints gbc_lblTagsSelected = new GridBagConstraints();
 		gbc_lblTagsSelected.gridwidth = 3;
 		gbc_lblTagsSelected.insets = new Insets(0, 0, 5, 0);
 		gbc_lblTagsSelected.gridx = 0;
-		gbc_lblTagsSelected.gridy = 9;
+		gbc_lblTagsSelected.gridy = 12;
 		panel.add(lblTagsSelected, gbc_lblTagsSelected);
 
-		final JLabel lblFilesWillBeChanged = new JLabel("0 files will be tagged");
+		final JLabel lblFilesWillBeChanged = new JLabel("<html><body style='width: 200 px'> 0  files will be tagged </html>");
 		GridBagConstraints gbc_lblFilesWillBeChanged = new GridBagConstraints();
 		gbc_lblFilesWillBeChanged.gridwidth = 3;
 		gbc_lblFilesWillBeChanged.gridx = 0;
-		gbc_lblFilesWillBeChanged.gridy = 10;
+		gbc_lblFilesWillBeChanged.gridy = 13;
 		panel.add(lblFilesWillBeChanged, gbc_lblFilesWillBeChanged);
 
 		final JScrollPane scrollPane = new JScrollPane();
@@ -258,43 +298,60 @@ public class audioEasyTagger extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				table.selectAll(); 
 				new CheckSelectionsInTable(  scrollPane,  table,  lblTagsSelected, 
-						 lblFilesWillBeChanged,  chckbxChangeAlbum,  chckbxChangeArtist);
+						lblFilesWillBeChanged,  chckbxChangeAlbum,  chckbxChangeArtist,chckbxChangeGenre);
 				//<html>Text color: <font color='red'>red</font></html>
 			}
 
 		});
-		
+
 		//this listener changes the background of the text in txtNewAlbum when chckbxChangeAlbum is selected
 		chckbxChangeAlbum.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 
+
 				if (chckbxChangeAlbum.isSelected()){
-					 txtNewAlbum.setBackground(Color.WHITE);
+					txtNewAlbum.setBackground(Color.WHITE);
 				}
 				else{
 					txtNewAlbum.setBackground(SystemColor.control);
 
 				}
 				new CheckSelectionsInTable(  scrollPane,  table,  lblTagsSelected, 
-						 lblFilesWillBeChanged,  chckbxChangeAlbum,  chckbxChangeArtist);
+						lblFilesWillBeChanged,  chckbxChangeAlbum,  chckbxChangeArtist, chckbxChangeGenre);
 				//<html>Text color: <font color='red'>red</font></html>
 			}
 
 		});
 
+		//this listener changes the background of the text in txtNewGenre when chckbxChangeAlbum is selected
+		chckbxChangeGenre.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				if (chckbxChangeGenre.isSelected()){
+					txtNewGenre.setBackground(Color.WHITE);
+				}
+				else{
+					txtNewGenre.setBackground(SystemColor.control);
+
+				}
+				new CheckSelectionsInTable(  scrollPane,  table,  lblTagsSelected, 
+						lblFilesWillBeChanged,  chckbxChangeAlbum,  chckbxChangeArtist, chckbxChangeGenre);
+				//<html>Text color: <font color='red'>red</font></html>
+			}
+
+		});
 		//this listener changes the background of the text in txtNewArtist when chckbxChangeArtist is selected
 		chckbxChangeArtist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 
+
 				if (chckbxChangeArtist.isSelected()){
-					 txtNewArtist.setBackground(Color.WHITE);
+					txtNewArtist.setBackground(Color.WHITE);
 				}
 				else{
 					txtNewArtist.setBackground(SystemColor.control);
 
 				}
 				new CheckSelectionsInTable(  scrollPane,  table,  lblTagsSelected, 
-						 lblFilesWillBeChanged,  chckbxChangeAlbum,  chckbxChangeArtist);
+						lblFilesWillBeChanged,  chckbxChangeAlbum,  chckbxChangeArtist,chckbxChangeGenre);
 				//<html>Text color: <font color='red'>red</font></html>
 			}
 
@@ -324,12 +381,12 @@ public class audioEasyTagger extends JFrame {
 
 
 					TagAnalyser analyser = new TagAnalyser(selectedFile);
- 
+
 					ArrayList<File> totalListOfFiles = new ArrayList<File>();
 					totalListOfFiles = analyser.getListOfFiles();
 
-					new loadFilesInTable(selectedFile, table,   scrollPane,  scrollPane_Albums,   
-							scrollPane_Artists,  lblFilesWillBeChanged,  listAlbums, listArtists);
+					new loadFilesInTable(selectedFile, table,   scrollPane,  scrollPane_Albums, scrollPane_Genre,   
+							scrollPane_Artists,  lblFilesWillBeChanged,  listAlbums, listArtists, listGenres);
 					//					scrollPane.setViewportView(table);
 					//	
 
@@ -374,6 +431,26 @@ public class audioEasyTagger extends JFrame {
 						}
 					};
 					listAlbums.addMouseListener(mouseListenerAlbum);
+					
+					MouseListener mouseListenerGenre = new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+							if (e.getClickCount() == 2) {
+								int selectedGenre= listGenres.getSelectedIndex();
+								TagAnalyser analyser1;
+								try {
+									analyser1 = new TagAnalyser(selectedFile);
+									txtNewGenre.setText(analyser1.getListOfGenresSortedByFrequency().get(selectedGenre));
+								} catch (CannotReadException | IOException
+										| TagException | ReadOnlyFileException
+										| InvalidAudioFrameException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+
+							}
+						}
+					};
+					listGenres.addMouseListener(mouseListenerGenre);
 
 
 					// we indicate the number of files that will be changed in the jlabel below the button.
@@ -381,7 +458,7 @@ public class audioEasyTagger extends JFrame {
 						public void mouseClicked(MouseEvent e) {
 							if (e.getClickCount() == 1) {
 								new CheckSelectionsInTable(  scrollPane,  table,  lblTagsSelected, 
-										 lblFilesWillBeChanged,  chckbxChangeAlbum,  chckbxChangeArtist);
+										lblFilesWillBeChanged,  chckbxChangeAlbum,  chckbxChangeArtist, chckbxChangeGenre);
 								//<html>Text color: <font color='red'>red</font></html>
 							}
 						}
@@ -391,10 +468,14 @@ public class audioEasyTagger extends JFrame {
 
 					File selectedFile1 = f.getSelectedFile();
 
-					new ListenerChangeLabelsButton(btnChangeLabels, chckbxChangeAlbum,txtNewAlbum, 
-							totalListOfFiles,table,	chckbxChangeArtist, txtNewArtist,
-							selectedFile1, scrollPane,  scrollPane_Albums,   scrollPane_Artists,  
-							lblFilesWillBeChanged,  listAlbums, listArtists);
+
+
+					new ListenerChangeLabelsButton(btnChangeLabels, chckbxChangeAlbum, txtNewAlbum, 
+							totalListOfFiles, table, chckbxChangeArtist,
+							chckbxChangeGenre, txtNewArtist, txtNewGenre,
+							selectedFile, scrollPane, scrollPane_Albums, 
+							scrollPane_Artists, scrollPane_Genre, 
+							lblFilesWillBeChanged, listAlbums, listArtists, listGenres);
 
 
 

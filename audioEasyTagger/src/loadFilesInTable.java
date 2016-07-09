@@ -17,7 +17,9 @@ import org.jaudiotagger.tag.TagException;
 
 public class loadFilesInTable {
 
-	public  loadFilesInTable(File selectedFile, JTable table, JScrollPane scrollPane, JScrollPane scrollPane_Albums, JScrollPane scrollPane_Artists, JLabel lblNewLabel_1, JList listAlbums, JList listArtists ){
+	public  loadFilesInTable(File selectedFile, JTable table, JScrollPane scrollPane, 
+			JScrollPane scrollPane_Albums, JScrollPane scrollPane_Genres,  JScrollPane scrollPane_Artists,  
+			JLabel lblNewLabel_1, JList listAlbums, JList listArtists, JList listGenres ){
 		try {
 
 			 TagAnalyser analyser = new TagAnalyser(selectedFile);
@@ -47,6 +49,21 @@ public class loadFilesInTable {
 			}
 			listArtists.setModel(listModelArtist);
 			scrollPane_Artists.setViewportView(listArtists);
+			
+			
+			
+			DefaultListModel<String> listModelGenres = new DefaultListModel();
+
+			ArrayList<String> listOfGenresWithFrequencies = new ArrayList<String>();
+			int k=0;
+			for (String genre: analyser.getListOfGenresSortedByFrequency()){
+				listOfGenresWithFrequencies.add(genre + " (" + analyser.getListOfFrequenciesGenres().get(k) + ")" );
+				listModelGenres.add(k, genre + " (" + analyser.getListOfFrequenciesGenres().get(k) + ")" );
+				k++;
+
+			}
+			listGenres.setModel(listModelGenres);
+			scrollPane_Genres.setViewportView(listGenres);
 
 
 
